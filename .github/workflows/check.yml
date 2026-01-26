@@ -1,0 +1,14 @@
+name: TNMGRMU B.PHARM Result Monitor
+
+on:
+  schedule:
+    - cron: "*/0.1 * * * *"
+  workflow_dispatch:
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install requests
+      - run: python monitor.py
