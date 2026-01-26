@@ -2,7 +2,7 @@ name: TNMGRMU B.PHARM Result Monitor
 
 on:
   schedule:
-    - cron: "*/0.1 * * * *"
+    - cron: "*/1 * * * *"
   workflow_dispatch:
 
 jobs:
