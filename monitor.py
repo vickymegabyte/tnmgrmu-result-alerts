@@ -4,16 +4,17 @@ import os
 
 URL = "https://cms2results.tnmgrmuexam.ac.in/#/ExamResult"
 
-BOT_TOKEN = os.environ["BOT_TOKEN"]
-CHAT_ID = os.environ["CHAT_ID"]
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+CHAT_ID = os.getenv("CHAT_ID")
 
-# Only B.PHARM keywords
+if not BOT_TOKEN or not CHAT_ID:
+    print("Missing BOT_TOKEN or CHAT_ID")
+    exit(0)
+
 KEYWORDS = [
     "B.PHARM",
     "B PHARM",
     "BPHARM",
-    "B.PHARM.",
-    "B.PHARM. ",
     "BACHELOR OF PHARMACY"
 ]
 
@@ -23,11 +24,13 @@ def get_page_content():
     return r.text.upper()
 
 def send_telegram():
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-    requests.post(url, json={
-        "chat_id": CHAT_ID,
-        "text": "🎓 B.PHARM RESULT PUBLISHED (TNMGRMU)\n\nCheck now:\nhttps://cms2results.tnmgrmuexam.ac.in/#/ExamResult"
-    })
+    requests.post(
+        f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
+        json={
+            "chat_id": CHAT_ID,
+            "text": "🎓 B.PHARM RESULT PUBLISHED (TNMGRMU)\n\nCheck now:\nhttps://cms2results.tnmgrmuexam.ac.in/#/ExamResult"
+        }
+    )
 
 def main():
     content = get_page_content()
@@ -39,11 +42,9 @@ def main():
     except FileNotFoundError:
         old_hash = ""
 
-    # Save new hash
     with open("hash.txt", "w") as f:
         f.write(new_hash)
 
-    # Alert only if page changed AND B.PHARM exists
     if new_hash != old_hash and any(k in content for k in KEYWORDS):
         send_telegram()
 
