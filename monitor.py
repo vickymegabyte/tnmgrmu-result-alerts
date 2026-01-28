@@ -45,6 +45,8 @@ def main():
     with open("hash.txt", "w") as f:
         f.write(new_hash)
 
+    send_telegram("✅ BOT IS WORKING – TEST MESSAGE")
+
     if new_hash != old_hash and any(k in content for k in KEYWORDS):
         send_telegram()
 
